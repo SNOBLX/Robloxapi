@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roblox API Checker</title>
+  <style>
+    /* Global reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1a1a1d, #2d2d34);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .discord-btn {
+      background: linear-gradient(135deg, #7289da, #5865f2);
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .discord-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: 2.5rem;
+      text-transform: uppercase;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .api-container {
+      width: 90%;
+      max-width: 800px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+      overflow-y: auto;
+      max-height: 60%;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .api-status {
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #333333, #444444);
+      color: white;
+      text-align: left;
+      font-size: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      animation: fadeIn 1.5s ease-in-out;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .api-status.success {
+      background: linear-gradient(135deg, #3cb043, #4caf50);
+    }
+
+    .api-status.error {
+      background: linear-gradient(135deg, #b71c1c, #e53935);
+    }
+
+    .api-status:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    footer {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #aaa;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    .modal h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .modal p {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .modal-close {
+      background: red;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .modal-close:hover {
+      background: darkred;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Discord Button -->
+  <header>
+    <button class="discord-btn" onclick="window.location.href='https://discord.gg/3RQwUPbrqh';">Join My Discord</button>
+  </header>
+
+  <h1>Roblox API Checker</h1>
+
+  <div class="api-container" id="api-container">
+    <p>Checking Roblox API status...</p>
+  </div>
+
+  <footer>Powered by Roblox API</footer>
+
+  <!-- Modal for Details -->
+  <div class="modal" id="modal">
+    <h2 id="modal-title">API Details</h2>
+    <p id="modal-body"></p>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+
+  <script>
+    const apiContainer = document.getElementById('api-container');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+
+    // Roblox API endpoints
+    const apiEndpoints = [
+      { name: 'Roblox Website', url: 'https://www.roblox.com' },
+      { name: 'Authentication', url: 'https://auth.roblox.com/v1' },
+      { name: 'Games', url: 'https://games.roblox.com/v1' },
+      { name: 'Users', url: 'https://users.roblox.com/v1' },
+      { name: 'Economy', url: 'https://economy.roblox.com/v1' },
+      { name: 'Avatar', url: 'https://avatar.roblox.com/v1' },
+      { name: 'Inventory', url: 'https://inventory.roblox.com/v1' },
+      { name: 'Friends', url: 'https://friends.roblox.com/v1' },
+      { name: 'Messaging', url: 'https://chat.roblox.com/v2' },
+      { name: 'Thumbnails', url: 'https://thumbnails.roblox.com/v1' },
+    ];
+
+    // Check APIs and display status
+    async function checkApis() {
+      apiContainer.innerHTML = ''; // Clear container
+      for (const api of apiEndpoints) {
+        const statusDiv = document.createElement('div');
+        statusDiv.classList.add('api-status');
+        statusDiv.textContent = `Checking ${api.name}...`;
+        apiContainer.appendChild(statusDiv);
+
+        try {
+          const startTime = Date.now();
+          const response = await fetch(api.url, { method: 'GET' });
+          const duration = Date.now() - startTime;
+          if (response.ok) {
+            statusDiv.textContent = `${api.name} is Online (Status: ${response.status})`;
+            statusDiv.classList.add('success');
+            statusDiv.onclick = () => openModal(api.name, `Response Time: ${duration}ms\nStatus Code: ${response.status}`);
+          } else {
+            statusDiv.textContent = `${api.name} is Offline (Status: ${response.status})`;
+            statusDiv.classList.add('error');
+            statusDiv.onclick = () => openModal(api.name, `Failed to fetch data. Status: ${response.status}`);
+          }
+        } catch (error) {
+          statusDiv.textContent = `${api.name} is Offline (Error: Unable to reach)`;
+          statusDiv.classList.add('error');
+          statusDiv.onclick = () => openModal(api.name, `Error: Unable to reach the API.`);
+        }
+      }
+    }
+
+    // Open Modal
+    function openModal(title, body) {
+      modal.style.display = 'block';
+      modalTitle.textContent = title;
+      modalBody.textContent = body;
+    }
+
+    // Close Modal
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    // Initial API Check
+    checkApis();
+  </script>
+</body>
+</html>
