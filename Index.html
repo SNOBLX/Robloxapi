@@ -189,13 +189,28 @@
       { name: 'Users', url: 'https://users.roblox.com/v1' },
       { name: 'Economy', url: 'https://economy.roblox.com/v1' },
       { name: 'Avatar', url: 'https://avatar.roblox.com/v1' },
-      { name: 'Inventory', url: 'https://inventory.roblox.com/v1' },
-      { name: 'Friends', url: 'https://friends.roblox.com/v1' },
-      { name: 'Messaging', url: 'https://chat.roblox.com/v2' },
-      { name: 'Thumbnails', url: 'https://thumbnails.roblox.com/v1' },
     ];
 
-    // Check APIs and display status
+    async function checkApi(url) {
+      // Try direct fetch first
+      try {
+        const response = await fetch(url, { method: 'GET' });
+        return { success: response.ok, status: response.status };
+      } catch (error) {
+        console.warn('Direct fetch failed, trying proxy...', url);
+      }
+
+      // Use a CORS proxy as a fallback
+      const proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
+      try {
+        const response = await fetch(proxyUrl, { method: 'GET' });
+        return { success: response.ok, status: response.status };
+      } catch (error) {
+        console.error('Proxy fetch failed:', error);
+        return { success: false, status: 'Error' };
+      }
+    }
+
     async function checkApis() {
       apiContainer.innerHTML = ''; // Clear container
       for (const api of apiEndpoints) {
@@ -204,35 +219,25 @@
         statusDiv.textContent = `Checking ${api.name}...`;
         apiContainer.appendChild(statusDiv);
 
-        try {
-          const startTime = Date.now();
-          const response = await fetch(api.url, { method: 'GET' });
-          const duration = Date.now() - startTime;
-          if (response.ok) {
-            statusDiv.textContent = `${api.name} is Online (Status: ${response.status})`;
-            statusDiv.classList.add('success');
-            statusDiv.onclick = () => openModal(api.name, `Response Time: ${duration}ms\nStatus Code: ${response.status}`);
-          } else {
-            statusDiv.textContent = `${api.name} is Offline (Status: ${response.status})`;
-            statusDiv.classList.add('error');
-            statusDiv.onclick = () => openModal(api.name, `Failed to fetch data. Status: ${response.status}`);
-          }
-        } catch (error) {
-          statusDiv.textContent = `${api.name} is Offline (Error: Unable to reach)`;
+        const result = await checkApi(api.url);
+        if (result.success) {
+          statusDiv.textContent = `${api.name} is Online (Status: ${result.status})`;
+          statusDiv.classList.add('success');
+          statusDiv.onclick = () => openModal(api.name, `Status Code: ${result.status}`);
+        } else {
+          statusDiv.textContent = `${api.name} is Offline (Status: ${result.status})`;
           statusDiv.classList.add('error');
-          statusDiv.onclick = () => openModal(api.name, `Error: Unable to reach the API.`);
+          statusDiv.onclick = () => openModal(api.name, 'API is unreachable.');
         }
       }
     }
 
-    // Open Modal
     function openModal(title, body) {
       modal.style.display = 'block';
       modalTitle.textContent = title;
       modalBody.textContent = body;
     }
 
-    // Close Modal
     function closeModal() {
       modal.style.display = 'none';
     }
