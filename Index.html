@@ -1,249 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roblox API Checker</title>
-  <style>
-    /* Global reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #1a1a1d, #2d2d34);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    header {
-      width: 100%;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .discord-btn {
-      background: linear-gradient(135deg, #7289da, #5865f2);
-      padding: 15px 30px;
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .discord-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    h1 {
-      margin: 20px 0;
-      font-size: 2.5rem;
-      text-transform: uppercase;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .api-container {
-      width: 90%;
-      max-width: 800px;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
-      margin-bottom: 20px;
-      overflow-y: auto;
-      max-height: 60%;
-      animation: fadeIn 1.2s ease-in-out;
-    }
-
-    .api-status {
-      margin: 10px 0;
-      padding: 15px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #333333, #444444);
-      color: white;
-      text-align: left;
-      font-size: 1rem;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
-      animation: fadeIn 1.5s ease-in-out;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .api-status.success {
-      background: linear-gradient(135deg, #3cb043, #4caf50);
-    }
-
-    .api-status.error {
-      background: linear-gradient(135deg, #b71c1c, #e53935);
-    }
-
-    .api-status:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-    }
-
-    footer {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      color: #aaa;
-      animation: fadeIn 2s ease-in-out;
-    }
-
-    /* Modal Styling */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      width: 80%;
-      max-width: 500px;
-    }
-
-    .modal h2 {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-    }
-
-    .modal p {
-      margin-bottom: 10px;
-      line-height: 1.5;
-    }
-
-    .modal-close {
-      background: red;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-
-    .modal-close:hover {
-      background: darkred;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Data Library</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Discord Button -->
-  <header>
-    <button class="discord-btn" onclick="window.location.href='https://discord.gg/3RQwUPbrqh';">Join My Discord</button>
-  </header>
+    <header>
+        <h1>Global Data Library</h1>
+        <p>Get the latest and historical data for any country.</p>
+        <select id="country-selector">
+            <!-- Country options will be dynamically populated -->
+        </select>
+    </header>
 
-  <h1>Roblox API Checker</h1>
+    <main>
+        <section id="country-info">
+            <h2>Country Information</h2>
+            <p id="country-name">Select a country to view data</p>
+        </section>
 
-  <div class="api-container" id="api-container">
-    <p>Checking Roblox API status...</p>
-  </div>
+        <section id="news-section">
+            <h2>Latest News</h2>
+            <div id="news-list">
+                <!-- News articles will appear here -->
+            </div>
+        </section>
 
-  <footer>Powered by Roblox API</footer>
+        <section id="weather-section">
+            <h2>Weather Information</h2>
+            <div id="weather-info">
+                <!-- Weather info will appear here -->
+            </div>
+        </section>
 
-  <!-- Modal for Details -->
-  <div class="modal" id="modal">
-    <h2 id="modal-title">API Details</h2>
-    <p id="modal-body"></p>
-    <button class="modal-close" onclick="closeModal()">Close</button>
-  </div>
+        <section id="covid-section">
+            <h2>COVID-19 Statistics</h2>
+            <div id="covid-info">
+                <!-- COVID stats will appear here -->
+            </div>
+        </section>
 
-  <script>
-    const apiContainer = document.getElementById('api-container');
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalBody = document.getElementById('modal-body');
+        <section id="currency-section">
+            <h2>Currency Exchange Rates</h2>
+            <div id="currency-info">
+                <!-- Currency exchange rates will appear here -->
+            </div>
+        </section>
 
-    // Roblox API endpoints
-    const apiEndpoints = [
-      { name: 'Roblox Website', url: 'https://www.roblox.com' },
-      { name: 'Authentication', url: 'https://auth.roblox.com/v1' },
-      { name: 'Games', url: 'https://games.roblox.com/v1' },
-      { name: 'Users', url: 'https://users.roblox.com/v1' },
-      { name: 'Economy', url: 'https://economy.roblox.com/v1' },
-      { name: 'Avatar', url: 'https://avatar.roblox.com/v1' },
-    ];
+    </main>
 
-    async function checkApi(url) {
-      // Try direct fetch first
-      try {
-        const response = await fetch(url, { method: 'GET' });
-        return { success: response.ok, status: response.status };
-      } catch (error) {
-        console.warn('Direct fetch failed, trying proxy...', url);
-      }
+    <footer>
+        <p>Powered by Public APIs</p>
+    </footer>
 
-      // Use a CORS proxy as a fallback
-      const proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
-      try {
-        const response = await fetch(proxyUrl, { method: 'GET' });
-        return { success: response.ok, status: response.status };
-      } catch (error) {
-        console.error('Proxy fetch failed:', error);
-        return { success: false, status: 'Error' };
-      }
-    }
-
-    async function checkApis() {
-      apiContainer.innerHTML = ''; // Clear container
-      for (const api of apiEndpoints) {
-        const statusDiv = document.createElement('div');
-        statusDiv.classList.add('api-status');
-        statusDiv.textContent = `Checking ${api.name}...`;
-        apiContainer.appendChild(statusDiv);
-
-        const result = await checkApi(api.url);
-        if (result.success) {
-          statusDiv.textContent = `${api.name} is Online (Status: ${result.status})`;
-          statusDiv.classList.add('success');
-          statusDiv.onclick = () => openModal(api.name, `Status Code: ${result.status}`);
-        } else {
-          statusDiv.textContent = `${api.name} is Offline (Status: ${result.status})`;
-          statusDiv.classList.add('error');
-          statusDiv.onclick = () => openModal(api.name, 'API is unreachable.');
-        }
-      }
-    }
-
-    function openModal(title, body) {
-      modal.style.display = 'block';
-      modalTitle.textContent = title;
-      modalBody.textContent = body;
-    }
-
-    function closeModal() {
-      modal.style.display = 'none';
-    }
-
-    // Initial API Check
-    checkApis();
-  </script>
+    <script src="app.js"></script>
 </body>
 </html>
